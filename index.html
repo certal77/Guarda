@@ -112,6 +112,15 @@
         .action-buttons .edit-button:hover {
             background-color: #007bb5;
         }
+
+        .sum-result {
+            margin-top: 20px;
+        }
+
+        .sum-result p {
+            font-size: 18px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -151,9 +160,16 @@
         <!-- Calculadora de Pena -->
         <div class="crime-info">
             <h2>Calculadora de Pena</h2>
-            <input type="number" id="crimeCode" placeholder="Código do Crime" />
-            <button onclick="calculatePenalty()">Calcular Pena</button>
-            <p id="penaltyResult"></p>
+            <p>Selecione os crimes para calcular o total:</p>
+            <div id="crimeSelectsContainer"></div>
+            <button onclick="calculateTotal()">Calcular Total</button>
+
+            <div class="sum-result" id="sumResult">
+                <p id="totalFine"></p>
+                <p id="totalMinSentence"></p>
+                <p id="totalMaxSentence"></p>
+                <p id="totalRecSentence"></p>
+            </div>
         </div>
     </div>
 
@@ -184,6 +200,7 @@
             crimeData.push(newCrime);
             renderCrimeTable();
             clearInputs();
+            renderCrimeSelects();
         }
 
         function renderCrimeTable() {
@@ -208,6 +225,26 @@
             });
         }
 
+        function renderCrimeSelects() {
+            const container = document.getElementById('crimeSelectsContainer');
+            container.innerHTML = ''; // Clear existing options
+
+            crimeData.forEach(crime => {
+                const select = document.createElement('input');
+                select.type = 'checkbox';
+                select.id = `crime-${crime.code}`;
+                select.dataset.code = crime.code;
+
+                const label = document.createElement('label');
+                label.htmlFor = `crime-${crime.code}`;
+                label.innerText = crime.description;
+
+                container.appendChild(select);
+                container.appendChild(label);
+                container.appendChild(document.createElement('br'));
+            });
+        }
+
         function editCrime(code) {
             const crime = crimeData.find(c => c.code === code);
             if (!crime) return;
@@ -224,18 +261,29 @@
         function deleteCrime(code) {
             crimeData = crimeData.filter(c => c.code !== code);
             renderCrimeTable();
+            renderCrimeSelects();
         }
 
-        function calculatePenalty() {
-            const crimeCode = document.getElementById('crimeCode').value;
-            const crime = crimeData.find(c => c.code == crimeCode);
+        function calculateTotal() {
+            let totalFine = 0;
+            let totalMinSentence = 0;
+            let totalMaxSentence = 0;
+            let totalRecSentence = 0;
 
-            if (crime) {
-                const penalty = `Pena Recomendada: ${crime.recSentence}, Pena Mínima: ${crime.minSentence}, Pena Máxima: ${crime.maxSentence}`;
-                document.getElementById('penaltyResult').textContent = penalty;
-            } else {
-                document.getElementById('penaltyResult').textContent = "Crime não encontrado!";
-            }
+            crimeData.forEach(crime => {
+                const checkbox = document.getElementById(`crime-${crime.code}`);
+                if (checkbox.checked) {
+                    totalFine += parseFloat(crime.fine);
+                    totalMinSentence += parseFloat(crime.minSentence);
+                    totalMaxSentence += parseFloat(crime.maxSentence);
+                    totalRecSentence += parseFloat(crime.recSentence);
+                }
+            });
+
+            document.getElementById('totalFine').textContent = `Total de Multa: €${totalFine.toFixed(2)}`;
+            document.getElementById('totalMinSentence').textContent = `Total de Pena Mínima: ${totalMinSentence} anos`;
+            document.getElementById('totalMaxSentence').textContent = `Total de Pena Máxima: ${totalMaxSentence} anos`;
+            document.getElementById('totalRecSentence').textContent = `Total de Pena Recomendada: ${totalRecSentence} anos`;
         }
 
         function clearInputs() {
