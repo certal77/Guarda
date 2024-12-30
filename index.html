@@ -91,6 +91,27 @@
         .crime-addition button:hover {
             background-color: #45a049;
         }
+
+        .action-buttons button {
+            padding: 5px 10px;
+            background-color: #f44336;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+
+        .action-buttons button:hover {
+            background-color: #d32f2f;
+        }
+
+        .action-buttons .edit-button {
+            background-color: #008CBA;
+        }
+
+        .action-buttons .edit-button:hover {
+            background-color: #007bb5;
+        }
     </style>
 </head>
 <body>
@@ -108,59 +129,11 @@
                         <th>Pena de Prisão Mínima</th>
                         <th>Pena de Prisão Máxima</th>
                         <th>Pena de Prisão Recomendada</th>
+                        <th>Ações</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td>101</td>
-                        <td>Roubo com violência</td>
-                        <td>€500 - €2000</td>
-                        <td>2 anos</td>
-                        <td>10 anos</td>
-                        <td>5 anos</td>
-                    </tr>
-                    <tr>
-                        <td>102</td>
-                        <td>Furto</td>
-                        <td>€100 - €500</td>
-                        <td>6 meses</td>
-                        <td>5 anos</td>
-                        <td>2 anos</td>
-                    </tr>
-                    <tr>
-                        <td>103</td>
-                        <td>Assédio sexual</td>
-                        <td>€1000 - €5000</td>
-                        <td>1 ano</td>
-                        <td>5 anos</td>
-                        <td>3 anos</td>
-                    </tr>
-                    <tr>
-                        <td>104</td>
-                        <td>Tráfico de Drogas</td>
-                        <td>€2000 - €10000</td>
-                        <td>3 anos</td>
-                        <td>15 anos</td>
-                        <td>7 anos</td>
-                    </tr>
-                    <tr>
-                        <td>105</td>
-                        <td>Violação de domicílio</td>
-                        <td>€300 - €1000</td>
-                        <td>1 ano</td>
-                        <td>5 anos</td>
-                        <td>2 anos</td>
-                    </tr>
-                    <tr>
-                        <td>106</td>
-                        <td>Assassinato</td>
-                        <td>€5000 - €20000</td>
-                        <td>10 anos</td>
-                        <td>25 anos</td>
-                        <td>15 anos</td>
-                    </tr>
-                    <tr>
-                                    
+                <tbody id="crimeTable">
+                    <!-- Crimes serão adicionados aqui -->
                 </tbody>
             </table>
         </div>
@@ -174,11 +147,20 @@
             <input type="text" id="recSentence" placeholder="Pena Recomendada" />
             <button onclick="addCrime()">Adicionar Crime</button>
         </div>
+
+        <!-- Calculadora de Pena -->
+        <div class="crime-info">
+            <h2>Calculadora de Pena</h2>
+            <input type="number" id="crimeCode" placeholder="Código do Crime" />
+            <button onclick="calculatePenalty()">Calcular Pena</button>
+            <p id="penaltyResult"></p>
+        </div>
     </div>
 
     <script>
+        let crimeData = [];
+
         function addCrime() {
-            // Obtendo os valores dos inputs
             const crimeDescription = document.getElementById('crimeDescription').value;
             const fine = document.getElementById('fine').value;
             const minSentence = document.getElementById('minSentence').value;
@@ -190,23 +172,73 @@
                 return;
             }
 
-            // Criando uma nova linha na tabela
-            const table = document.querySelector('table tbody');
-            const newRow = document.createElement('tr');
-            
-            newRow.innerHTML = `
-                <td></td>
-                <td>${crimeDescription}</td>
-                <td>${fine}</td>
-                <td>${minSentence}</td>
-                <td>${maxSentence}</td>
-                <td>${recSentence}</td>
-            `;
+            const newCrime = {
+                code: crimeData.length + 1,
+                description: crimeDescription,
+                fine,
+                minSentence,
+                maxSentence,
+                recSentence
+            };
 
-            // Inserindo a nova linha na tabela
-            table.appendChild(newRow);
+            crimeData.push(newCrime);
+            renderCrimeTable();
+            clearInputs();
+        }
 
-            // Limpando os campos após adicionar
+        function renderCrimeTable() {
+            const tableBody = document.getElementById('crimeTable');
+            tableBody.innerHTML = '';
+
+            crimeData.forEach(crime => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${crime.code}</td>
+                    <td>${crime.description}</td>
+                    <td>${crime.fine}</td>
+                    <td>${crime.minSentence}</td>
+                    <td>${crime.maxSentence}</td>
+                    <td>${crime.recSentence}</td>
+                    <td class="action-buttons">
+                        <button class="edit-button" onclick="editCrime(${crime.code})">Editar</button>
+                        <button onclick="deleteCrime(${crime.code})">Excluir</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        function editCrime(code) {
+            const crime = crimeData.find(c => c.code === code);
+            if (!crime) return;
+
+            document.getElementById('crimeDescription').value = crime.description;
+            document.getElementById('fine').value = crime.fine;
+            document.getElementById('minSentence').value = crime.minSentence;
+            document.getElementById('maxSentence').value = crime.maxSentence;
+            document.getElementById('recSentence').value = crime.recSentence;
+
+            deleteCrime(code); // Remove the crime from the list to update it
+        }
+
+        function deleteCrime(code) {
+            crimeData = crimeData.filter(c => c.code !== code);
+            renderCrimeTable();
+        }
+
+        function calculatePenalty() {
+            const crimeCode = document.getElementById('crimeCode').value;
+            const crime = crimeData.find(c => c.code == crimeCode);
+
+            if (crime) {
+                const penalty = `Pena Recomendada: ${crime.recSentence}, Pena Mínima: ${crime.minSentence}, Pena Máxima: ${crime.maxSentence}`;
+                document.getElementById('penaltyResult').textContent = penalty;
+            } else {
+                document.getElementById('penaltyResult').textContent = "Crime não encontrado!";
+            }
+        }
+
+        function clearInputs() {
             document.getElementById('crimeDescription').value = '';
             document.getElementById('fine').value = '';
             document.getElementById('minSentence').value = '';
@@ -216,4 +248,5 @@
     </script>
 </body>
 </html>
+
 
