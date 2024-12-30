@@ -30,15 +30,10 @@
             margin-bottom: 20px;
         }
 
-        .table-container {
-            margin: 20px 0;
-            overflow-x: auto;
-        }
-
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 10px;
+            margin-top: 20px;
         }
 
         th, td {
@@ -59,65 +54,27 @@
             background-color: #f1f1f1;
         }
 
-        .crime-info {
-            margin: 20px 0;
+        .sum-container {
+            margin-top: 20px;
             text-align: center;
         }
 
-        .button-container {
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .crime-addition {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
-        }
-
-        .crime-addition input, .crime-addition select, .crime-addition button {
-            padding: 10px;
-            margin-right: 10px;
-            font-size: 16px;
-        }
-
-        .crime-addition button {
+        .sum-container button {
+            padding: 10px 20px;
             background-color: #4CAF50;
             color: white;
             border: none;
+            border-radius: 5px;
+            font-size: 16px;
             cursor: pointer;
         }
 
-        .crime-addition button:hover {
+        .sum-container button:hover {
             background-color: #45a049;
         }
 
-        .action-buttons button {
-            padding: 5px 10px;
-            background-color: #f44336;
-            color: white;
-            border: none;
-            cursor: pointer;
-            margin-right: 5px;
-        }
-
-        .action-buttons button:hover {
-            background-color: #d32f2f;
-        }
-
-        .action-buttons .edit-button {
-            background-color: #008CBA;
-        }
-
-        .action-buttons .edit-button:hover {
-            background-color: #007bb5;
-        }
-
-        .sum-result {
+        .sum-container p {
             margin-top: 20px;
-        }
-
-        .sum-result p {
             font-size: 18px;
             font-weight: bold;
         }
@@ -128,173 +85,85 @@
         <h1>Calculadora de Crimes</h1>
 
         <!-- Tabela de Crimes -->
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Código do Crime</th>
-                        <th>Descrição do Crime</th>
-                        <th>Multa (em €)</th>
-                        <th>Pena de Prisão Mínima</th>
-                        <th>Pena de Prisão Máxima</th>
-                        <th>Pena de Prisão Recomendada</th>
-                        <th>Ações</th>
-                    </tr>
-                </thead>
-                <tbody id="crimeTable">
-                    <!-- Crimes serão adicionados aqui -->
-                </tbody>
-            </table>
-        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Descrição do Crime</th>
+                    <th>Multa (€)</th>
+                    <th>Pena de Prisão Mínima</th>
+                    <th>Pena de Prisão Máxima</th>
+                    <th>Pena de Prisão Recomendada</th>
+                    <th>Selecionar</th>
+                </tr>
+            </thead>
+            <tbody id="crimeTable">
+                <!-- Crimes serão preenchidos dinamicamente -->
+            </tbody>
+        </table>
 
-        <!-- Formulário de Adição de Crime -->
-        <div class="crime-addition">
-            <input type="text" id="crimeDescription" placeholder="Descrição do Crime" />
-            <input type="text" id="fine" placeholder="Multa (€)" />
-            <input type="text" id="minSentence" placeholder="Pena Mínima" />
-            <input type="text" id="maxSentence" placeholder="Pena Máxima" />
-            <input type="text" id="recSentence" placeholder="Pena Recomendada" />
-            <button onclick="addCrime()">Adicionar Crime</button>
-        </div>
-
-        <!-- Calculadora de Pena -->
-        <div class="crime-info">
-            <h2>Calculadora de Pena</h2>
-            <p>Selecione os crimes para calcular o total:</p>
-            <div id="crimeSelectsContainer"></div>
-            <button onclick="calculateTotal()">Calcular Total</button>
-
-            <div class="sum-result" id="sumResult">
-                <p id="totalFine"></p>
-                <p id="totalMinSentence"></p>
-                <p id="totalMaxSentence"></p>
-                <p id="totalRecSentence"></p>
-            </div>
+        <!-- Calculadora -->
+        <div class="sum-container">
+            <button onclick="calculateSum()">Calcular Total</button>
+            <p id="result"></p>
         </div>
     </div>
 
     <script>
-        let crimeData = [];
+        // Lista de crimes pré-definidos
+        const crimes = [
+            { descricao: "Roubo", multa: 5000, minima: 20, maxima: 30, recomendada: 25 },
+            { descricao: "Homicídio", multa: 10000, minima: 25, maxima: 35, recomendada: 30 },
+            { descricao: "Tomada de Reféns", multa: 8000, minima: 15, maxima: 25, recomendada: 20 },
+            { descricao: "Excesso de Velocidade", multa: 300, minima: 0, maxima: 1, recomendada: 0.5 },
+            { descricao: "Desobediência (Simples)", multa: 500, minima: 0, maxima: 1, recomendada: 0.5 },
+        ];
 
-        function addCrime() {
-            const crimeDescription = document.getElementById('crimeDescription').value;
-            const fine = document.getElementById('fine').value;
-            const minSentence = document.getElementById('minSentence').value;
-            const maxSentence = document.getElementById('maxSentence').value;
-            const recSentence = document.getElementById('recSentence').value;
-
-            if (!crimeDescription || !fine || !minSentence || !maxSentence || !recSentence) {
-                alert("Por favor, preencha todos os campos.");
-                return;
-            }
-
-            const newCrime = {
-                code: crimeData.length + 1,
-                description: crimeDescription,
-                fine,
-                minSentence,
-                maxSentence,
-                recSentence
-            };
-
-            crimeData.push(newCrime);
-            renderCrimeTable();
-            clearInputs();
-            renderCrimeSelects();
-        }
-
-        function renderCrimeTable() {
-            const tableBody = document.getElementById('crimeTable');
-            tableBody.innerHTML = '';
-
-            crimeData.forEach(crime => {
-                const row = document.createElement('tr');
+        // Carregar crimes na tabela
+        function loadCrimes() {
+            const crimeTable = document.getElementById("crimeTable");
+            crimes.forEach((crime, index) => {
+                const row = document.createElement("tr");
                 row.innerHTML = `
-                    <td>${crime.code}</td>
-                    <td>${crime.description}</td>
-                    <td>${crime.fine}</td>
-                    <td>${crime.minSentence}</td>
-                    <td>${crime.maxSentence}</td>
-                    <td>${crime.recSentence}</td>
-                    <td class="action-buttons">
-                        <button class="edit-button" onclick="editCrime(${crime.code})">Editar</button>
-                        <button onclick="deleteCrime(${crime.code})">Excluir</button>
-                    </td>
+                    <td>${crime.descricao}</td>
+                    <td>${crime.multa.toFixed(2)}€</td>
+                    <td>${crime.minima} anos</td>
+                    <td>${crime.maxima} anos</td>
+                    <td>${crime.recomendada} anos</td>
+                    <td><input type="checkbox" data-index="${index}"></td>
                 `;
-                tableBody.appendChild(row);
+                crimeTable.appendChild(row);
             });
         }
 
-        function renderCrimeSelects() {
-            const container = document.getElementById('crimeSelectsContainer');
-            container.innerHTML = ''; // Clear existing options
+        // Calcular total de multa e pena
+        function calculateSum() {
+            const checkboxes = document.querySelectorAll("input[type='checkbox']:checked");
+            let totalMulta = 0;
+            let totalMinima = 0;
+            let totalMaxima = 0;
+            let totalRecomendada = 0;
 
-            crimeData.forEach(crime => {
-                const select = document.createElement('input');
-                select.type = 'checkbox';
-                select.id = `crime-${crime.code}`;
-                select.dataset.code = crime.code;
-
-                const label = document.createElement('label');
-                label.htmlFor = `crime-${crime.code}`;
-                label.innerText = crime.description;
-
-                container.appendChild(select);
-                container.appendChild(label);
-                container.appendChild(document.createElement('br'));
-            });
-        }
-
-        function editCrime(code) {
-            const crime = crimeData.find(c => c.code === code);
-            if (!crime) return;
-
-            document.getElementById('crimeDescription').value = crime.description;
-            document.getElementById('fine').value = crime.fine;
-            document.getElementById('minSentence').value = crime.minSentence;
-            document.getElementById('maxSentence').value = crime.maxSentence;
-            document.getElementById('recSentence').value = crime.recSentence;
-
-            deleteCrime(code); // Remove the crime from the list to update it
-        }
-
-        function deleteCrime(code) {
-            crimeData = crimeData.filter(c => c.code !== code);
-            renderCrimeTable();
-            renderCrimeSelects();
-        }
-
-        function calculateTotal() {
-            let totalFine = 0;
-            let totalMinSentence = 0;
-            let totalMaxSentence = 0;
-            let totalRecSentence = 0;
-
-            crimeData.forEach(crime => {
-                const checkbox = document.getElementById(`crime-${crime.code}`);
-                if (checkbox.checked) {
-                    totalFine += parseFloat(crime.fine);
-                    totalMinSentence += parseFloat(crime.minSentence);
-                    totalMaxSentence += parseFloat(crime.maxSentence);
-                    totalRecSentence += parseFloat(crime.recSentence);
-                }
+            checkboxes.forEach((checkbox) => {
+                const index = checkbox.getAttribute("data-index");
+                const crime = crimes[index];
+                totalMulta += crime.multa;
+                totalMinima += crime.minima;
+                totalMaxima += crime.maxima;
+                totalRecomendada += crime.recomendada;
             });
 
-            document.getElementById('totalFine').textContent = `Total de Multa: €${totalFine.toFixed(2)}`;
-            document.getElementById('totalMinSentence').textContent = `Total de Pena Mínima: ${totalMinSentence} anos`;
-            document.getElementById('totalMaxSentence').textContent = `Total de Pena Máxima: ${totalMaxSentence} anos`;
-            document.getElementById('totalRecSentence').textContent = `Total de Pena Recomendada: ${totalRecSentence} anos`;
+            const result = document.getElementById("result");
+            result.innerHTML = `
+                <strong>Total de Multas:</strong> ${totalMulta.toFixed(2)}€<br>
+                <strong>Pena Mínima Total:</strong> ${totalMinima} anos<br>
+                <strong>Pena Máxima Total:</strong> ${totalMaxima} anos<br>
+                <strong>Pena Recomendada Total:</strong> ${totalRecomendada} anos
+            `;
         }
 
-        function clearInputs() {
-            document.getElementById('crimeDescription').value = '';
-            document.getElementById('fine').value = '';
-            document.getElementById('minSentence').value = '';
-            document.getElementById('maxSentence').value = '';
-            document.getElementById('recSentence').value = '';
-        }
+        // Inicializar tabela ao carregar a página
+        window.onload = loadCrimes;
     </script>
 </body>
 </html>
-
 
