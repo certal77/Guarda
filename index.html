@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Crimes</title>
+    <style>
+        /* Estilo global */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        /* Container principal da calculadora */
+        .calculator {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 300px;
+        }
+
+        /* Display de resultado */
+        .display {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            text-align: center;
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        /* Botões */
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .btn {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 15px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        .btn:active {
+            background-color: #003f7f;
+        }
+
+        /* Botões de crime */
+        .btn-crime {
+            background-color: #28a745;
+        }
+
+        .btn-crime:hover {
+            background-color: #218838;
+        }
+
+        .btn-crime:active {
+            background-color: #1e7e34;
+        }
+
+        /* Título */
+        h1 {
+            text-align: center;
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <h1>Calculadora de Crimes</h1>
+        <div class="display">
+            <input type="text" id="result" readonly placeholder="Total Calculado">
+        </div>
+        <div class="buttons">
+            <button class="btn btn-crime" onclick="chooseCrime('crime1')">Roubo</button>
+            <button class="btn btn-crime" onclick="chooseCrime('crime2')">Assalto</button>
+            <button class="btn btn-crime" onclick="chooseCrime('crime3')">Homicídio</button>
+            <button class="btn btn-crime" onclick="chooseCrime('crime4')">Furto</button>
+            <button class="btn btn-crime" onclick="chooseCrime('crime5')">Violação</button>
+            <button class="btn btn-crime" onclick="chooseCrime('crime6')">Crackdown</button>
+            <button class="btn" onclick="calculateTotal()">Calcular Total</button>
+            <button class="btn" onclick="clearDisplay()">Limpar</button>
+        </div>
+    </div>
+
+    <script>
+        let crimes = [];
+
+        // Função para escolher o crime e adicionar os dados
+        function chooseCrime(crime) {
+            let crimeData = {};
+            
+            switch(crime) {
+                case 'crime1':
+                    crimeData = { name: "Roubo", multa: 5000, penaMaxima: 12, penaMinima: 5, penaRecomendada: 8 };
+                    break;
+                case 'crime2':
+                    crimeData = { name: "Assalto", multa: 3000, penaMaxima: 10, penaMinima: 3, penaRecomendada: 6 };
+                    break;
+                case 'crime3':
+                    crimeData = { name: "Homicídio", multa: 10000, penaMaxima: 25, penaMinima: 10, penaRecomendada: 20 };
+                    break;
+                case 'crime4':
+                    crimeData = { name: "Furto", multa: 2000, penaMaxima: 5, penaMinima: 1, penaRecomendada: 3 };
+                    break;
+                case 'crime5':
+                    crimeData = { name: "Violação", multa: 8000, penaMaxima: 15, penaMinima: 7, penaRecomendada: 12 };
+                    break;
+                case 'crime6':
+                    crimeData = { name: "Crackdown", multa: 4000, penaMaxima: 7, penaMinima: 2, penaRecomendada: 5 };
+                    break;
+                default:
+                    alert("Selecione um crime válido.");
+                    return;
+            }
+
+            // Adiciona o crime à lista
+            crimes.push(crimeData);
+            displayCrime(crimeData);
+        }
+
+        // Função para exibir o crime selecionado
+        function displayCrime(crime) {
+            document.getElementById('result').value = `${crime.name}: \n` +
+                `Multa: ${crime.multa}€\n` +
+                `Pena Máxima: ${crime.penaMaxima} anos\n` +
+                `Pena Mínima: ${crime.penaMinima} anos\n` +
+                `Pena Recomendada: ${crime.penaRecomendada} anos`;
+        }
+
+        // Função para calcular o total
+        function calculateTotal() {
+            let totalMulta = 0;
+            let totalPenaMaxima = 0;
+            let totalPenaMinima = 0;
+            let totalPenaRecomendada = 0;
+
+            crimes.forEach(crime => {
+                totalMulta += crime.multa;
+                totalPenaMaxima += crime.penaMaxima;
+                totalPenaMinima += crime.penaMinima;
+                totalPenaRecomendada += crime.penaRecomendada;
+            });
+
+            // Exibe o resultado total
+            document.getElementById('result').value = `Total Multa: ${totalMulta}€\n` +
+                `Total Pena Máxima: ${totalPenaMaxima} anos\n` +
+                `Total Pena Mínima: ${totalPenaMinima} anos\n` +
+                `Total Pena Recomendada: ${totalPenaRecomendada} anos`;
+        }
+
+        // Função para limpar os dados
+        function clearDisplay() {
+            crimes = [];
+            document.getElementById('result').value = "";
+        }
+    </script>
+</body>
+</html>
