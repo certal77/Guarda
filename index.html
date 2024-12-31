@@ -6,10 +6,11 @@
     <title>Calculadora de Crimes</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to bottom right, #2c3e50, #4ca1af);
             margin: 0;
             padding: 0;
+            color: #333;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -17,17 +18,30 @@
         }
 
         .container {
-            width: 80%;
-            max-width: 1000px;
-            padding: 20px;
-            background-color: #fff;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
+            width: 90%;
+            max-width: 1200px;
+            padding: 30px;
+            background: #ffffff;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            animation: fadeIn 0.8s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         h1 {
             text-align: center;
             margin-bottom: 20px;
+            color: #2c3e50;
         }
 
         table {
@@ -37,13 +51,14 @@
         }
 
         th, td {
-            padding: 10px;
+            padding: 15px;
             text-align: center;
             border: 1px solid #ddd;
         }
 
         th {
-            background-color: #f2f2f2;
+            background-color: #4ca1af;
+            color: white;
         }
 
         tr:nth-child(even) {
@@ -51,32 +66,40 @@
         }
 
         tr:hover {
-            background-color: #f1f1f1;
+            background-color: #eaf2f8;
+            transition: 0.3s;
         }
 
         .sum-container {
-            margin-top: 20px;
+            margin-top: 30px;
             text-align: center;
         }
 
         .sum-container button {
-            padding: 10px 20px;
-            background-color: #4CAF50;
+            padding: 12px 25px;
+            background: #4ca1af;
             color: white;
             border: none;
-            border-radius: 5px;
-            font-size: 16px;
+            border-radius: 8px;
+            font-size: 18px;
             cursor: pointer;
+            transition: background 0.3s;
         }
 
         .sum-container button:hover {
-            background-color: #45a049;
+            background: #3b8d99;
         }
 
         .sum-container p {
             margin-top: 20px;
-            font-size: 18px;
+            font-size: 20px;
             font-weight: bold;
+            color: #2c3e50;
+        }
+
+        input[type='checkbox'] {
+            transform: scale(1.2);
+            cursor: pointer;
         }
     </style>
 </head>
@@ -110,7 +133,7 @@
 
     <script>
         // Lista de crimes pré-definidos
-const crimes = [
+       const crimes = 
     { artigo: "4", descricao: "Desobediência a Ordens das Autoridades", multa: 6000, minima: 0, maxima: 0, recomendada: 0 },
     { artigo: "13", descricao: "Posição de Marcha Indevida", multa: 3000, minima: 0, maxima: 0, recomendada: 0 },
     { artigo: "17", descricao: "Circular em Bermas e Passeios", multa: 3000, minima: 0, maxima: 0, recomendada: 0 },
@@ -153,7 +176,8 @@ const crimes = [
     { artigo: "22", descricao: "Difamação", multa: 50000, minima: 0, maxima: 0, recomendada: 1 },
     { artigo: "23", descricao: "Injúria", multa: 25000, minima: 0, maxima: 0, recomendada: 0 },
     { artigo: "26", descricao: "Violação de Domicílio ou Perturbação da Vida Privada", multa: 30000, minima: 0, maxima: 2, recomendada: 2 },
-];
+
+        ];
 
         // Carregar crimes na tabela
         function loadCrimes() {
