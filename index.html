@@ -112,54 +112,15 @@
     </div>
 
     <script>
-        // Lista de crimes pré-definidos
-        const crimes = [
-             { artigo: "4", descricao: "Desobediência a Ordens das Autoridades", multa: 6000, minima: 0, maxima: 0, recomendada: 0 },
-             { artigo: "13", descricao: "Posição de Marcha Indevida", multa: 3000, minima: 0, maxima: 0, recomendada: 0 },
-             { artigo: "17", descricao: "Circular em Bermas e Passeios", multa: 3000, minima: 0, maxima: 0, recomendada: 0 },
-             { artigo: "59", descricao: "Regras Gerais de Ausência de Iluminação", multa: 3000, minima: 0, maxima: 0, recomendada: 0 },
-             { artigo: "72", descricao: "Manobras Proibidas em Autoestradas", multa: 2500, minima: 0, maxima: 0, recomendada: 0 },
-             { artigo: "81.6.a", descricao: "Condução Sob Influência de Álcool (Grave)", multa: 12500, minima: 0, maxima: 0, recomendada: 0 },
-             { artigo: "81.6.b", descricao: "Condução Sob Influência de Álcool (Muito Grave)", multa: 25000, minima: 0, maxima: 0, recomendada: 0 },
-             { artigo: "85", descricao: "Ausência de Documentos do Condutor", multa: 3000, minima: 0, maxima: 0, recomendada: 0 },
-             { artigo: "90", descricao: "Regras de Condução para Motociclos", multa: 3000, minima: 0, maxima: 0, recomendada: 0 },
-             { artigo: "114", descricao: "Características Ilegais dos Veículos", multa: 12500, minima: 0, maxima: 0, recomendada: 0 },
-             { artigo: "116", descricao: "Ausência de Inspeções", multa: 50000, minima: 0, maxima: 0, recomendada: 0 },
-             { artigo: "123", descricao: "Ausência de Carta de Condução", multa: 2500, minima: 0, maxima: 0, recomendada: 0 },
-             { artigo: "150", descricao: "Obrigação de Seguro", multa: 25000, minima: 0, maxima: 0, recomendada: 0 },
-             { artigo: "0", descricao: "Exercício de Pesca sem Licença", multa: 100000, minima: 0, maxima: 0, recomendada: 0 },
-             { artigo: "0", descricao: "Ausência de Seguro na Embarcação", multa: 75000, minima: 0, maxima: 0, recomendada: 0 },
-             { artigo: "0", descricao: "Ausência do Livrete da Embarcação", multa: 60000, minima: 0, maxima: 0, recomendada: 0 },
-             { artigo: "0", descricao: "Ausência de Carta de Navegador", multa: 125000, minima: 0, maxima: 0, recomendada: 0 },
-             { artigo: "0", descricao: "Violação de Regras de Navegação", multa: 90000, minima: 0, maxima: 0, recomendada: 0 },
-             { artigo: "0", descricao: "Abalroamento Marítimo", multa: 120000, minima: 0, maxima: 0, recomendada: 0 },
-             { artigo: "1", descricao: "Homicídio", multa: 150000, minima: 8, maxima: 12, recomendada: 16 },
-             { artigo: "2", descricao: "Homicídio Qualificado", multa: 300000, minima: 12, maxima: 19, recomendada: 20 },
-             { artigo: "3", descricao: "Homicídio Privilegiado", multa: 30000, minima: 1, maxima: 3, recomendada: 5 },
-             { artigo: "4", descricao: "Ofensa à Integridade Física Simples", multa: 25000, minima: 0, maxima: 6, recomendada: 6 },
-             { artigo: "7", descricao: "Ofensa à Integridade Física por Negligência", multa: 75000, minima: 0, maxima: 2, recomendada: 2 },
-             { artigo: "6", descricao: "Ofensa à Integridade Física Qualificada", multa: 75000, minima: 0, maxima: 2, recomendada: 4 },
-             { artigo: "5", descricao: "Ofensa à Integridade Física Grave", multa: 50000, minima: 2, maxima: 8, recomendada: 10 },
-             { artigo: "9", descricao: "Violência Doméstica", multa: 50000, minima: 1, maxima: 3, recomendada: 5 },
-             { artigo: "10", descricao: "Maus Tratos", multa: 50000, minima: 1, maxima: 3, recomendada: 5 },
-             { artigo: "11", descricao: "Violação de Regras de Segurança", multa: 25000, minima: 1, maxima: 3, recomendada: 5 },
-             { artigo: "12", descricao: "Ameaça", multa: 30000, minima: 0, maxima: 0, recomendada: 1 },
-             { artigo: "13", descricao: "Coação", multa: 50000, minima: 0, maxima: 2, recomendada: 2 },
-             { artigo: "14", descricao: "Sequestro", multa: 75000, minima: 0, maxima: 2, recomendada: 3 },
-             { artigo: "15", descricao: "Escravidão", multa: 150000, minima: 5, maxima: 10, recomendada: 15 },
-             { artigo: "16", descricao: "Tráfico de Pessoas", multa: 150000, minima: 5, maxima: 10, recomendada: 15 },
-             { artigo: "17", descricao: "Rapto", multa: 100000, minima: 2, maxima: 5, recomendada: 8 },
-             { artigo: "18", descricao: "Tomada de Reféns", multa: 125000, minima: 2, maxima: 6, recomendada: 10 },
-             { artigo: "19", descricao: "Coação Sexual", multa: 100000, minima: 2, maxima: 5, recomendada: 8 },
-             { artigo: "20", descricao: "Violação", multa: 100000, minima: 3, maxima: 7, recomendada: 10 },
-             { artigo: "21", descricao: "Abuso Sexual de Pessoa Incapaz de Resistência", multa: 100000, minima: 2, maxima: 5, recomendada: 8 },
-             { artigo: "22", descricao: "Difamação", multa: 50000, minima: 0, maxima: 0, recomendada: 1 },
-             { artigo: "23", descricao: "Injúria", multa: 25000, minima: 0, maxima: 0, recomendada: 0 },
-             { artigo: "26", descricao: "Violação de Domicílio ou Perturbação da Vida Privada", multa: 30000, minima: 0, maxima: 2, recomendada: 2 },
-        ];
-
-        // Carregar crimes na tabela
         document.addEventListener("DOMContentLoaded", function() {
+            const crimes = [
+                { descricao: "Desobediência a Ordens das Autoridades", multa: 6000, minima: 0, maxima: 0, recomendada: 0 },
+                { descricao: "Condução Sob Influência de Álcool", multa: 12500, minima: 0, maxima: 0, recomendada: 0 },
+                { descricao: "Ausência de Carta de Condução", multa: 2500, minima: 0, maxima: 0, recomendada: 0 },
+                { descricao: "Homicídio", multa: 150000, minima: 8, maxima: 12, recomendada: 16 },
+                { descricao: "Violação", multa: 100000, minima: 3, maxima: 7, recomendada: 10 }
+            ];
+
             const crimeTable = document.getElementById("crimeTable");
             crimes.forEach((crime, index) => {
                 const row = document.createElement("tr");
@@ -173,25 +134,33 @@
                 `;
                 crimeTable.appendChild(row);
             });
+
+            window.calculateSum = function() {
+                const checkboxes = document.querySelectorAll("input[type='checkbox']:checked");
+                let totalMulta = 0;
+                let totalMinima = 0;
+                let totalMaxima = 0;
+                let totalRecomendada = 0;
+
+                checkboxes.forEach(checkbox => {
+                    const index = checkbox.getAttribute("data-index");
+                    const crime = crimes[index];
+                    totalMulta += crime.multa;
+                    totalMinima += crime.minima;
+                    totalMaxima += crime.maxima;
+                    totalRecomendada += crime.recomendada;
+                });
+
+                const result = document.getElementById("result");
+                result.innerHTML = `
+                    <strong>Total de Multas:</strong> ${totalMulta.toFixed(2)}€<br>
+                    <strong>Pena Mínima Total:</strong> ${totalMinima} anos<br>
+                    <strong>Pena Máxima Total:</strong> ${totalMaxima} anos<br>
+                    <strong>Pena Recomendada Total:</strong> ${totalRecomendada} anos
+                `;
+            };
         });
+    </script>
+</body>
+</html>
 
-        // Calcular total de multa e penas
-        function calculateSum() {
-            const checkboxes = document.querySelectorAll("input[type='checkbox']:checked");
-            let totalMulta = 0;
-            let totalMinima = 0;
-            let totalMaxima = 0;
-            let totalRecomendada = 0;
-
-            checkboxes.forEach(checkbox => {
-                const index = checkbox.getAttribute("data-index");
-                const crime = crimes[index];
-                totalMulta += crime.multa;
-                totalMinima += crime.minima;
-                totalMaxima += crime.maxima;
-                totalRecomendada += crime.recomendada;
-            });
-
-            const result = document.getElementById("result");
-            result.innerHTML = `
-                <strong>
